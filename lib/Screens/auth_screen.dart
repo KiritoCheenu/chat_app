@@ -12,12 +12,13 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
+
   void _submitAuthForm(String email, String password, String username,
       bool isLogin, BuildContext ctx) async {
     UserCredential authResult;
     try {
       setState(() {
-        _isLoading=true;
+        _isLoading = true;
       });
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
@@ -31,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .set({'username': username, 'email': email});
       }
       setState(() {
-        _isLoading=false;
+        _isLoading = false;
       });
     } on PlatformException catch (e) {
       var msg = "An error occured,please check you credentials!";
@@ -39,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
         msg = e.message;
       }
       setState(() {
-        _isLoading=false;
+        _isLoading = false;
       });
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
         content: Text(msg),
@@ -47,7 +48,7 @@ class _AuthScreenState extends State<AuthScreen> {
       ));
     } catch (e) {
       setState(() {
-        _isLoading=false;
+        _isLoading = false;
       });
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
         content: Text(e.message),
@@ -61,7 +62,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: AuthForm(_isLoading,_submitAuthForm),
+      body: AuthForm(_isLoading, _submitAuthForm),
     );
   }
 }
