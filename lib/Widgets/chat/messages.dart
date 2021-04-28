@@ -16,6 +16,8 @@ class Messages extends StatelessWidget {
           return Center(
             child: CircularProgressIndicator(),
           );
+        else if (!chatSnapshot.hasData) return Container();
+
         final chatDocs = chatSnapshot.data.docs;
         final user = FirebaseAuth.instance.currentUser;
         return ListView.builder(
