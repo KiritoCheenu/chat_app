@@ -40,14 +40,14 @@ class _AuthScreenState extends State<AuthScreen> {
         final ref = FirebaseStorage.instance
             .ref()
             .child('user_image')
-            .child(authResult.user.uid + '.jpg');
+            .child(authResult.user!.uid + '.jpg');
         await ref.putFile(image);
 
         final url = await ref.getDownloadURL();
 
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(authResult.user.uid)
+            .doc(authResult.user!.uid)
             .set({
           'username': username,
           'email': email,
@@ -58,7 +58,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } on PlatformException catch (e) {
-      var msg = "An error occured,please check you credentials!";
+      String? msg = "An error occured,please check you credentials!";
       if (e.message != null) {
         msg = e.message;
       }
@@ -66,7 +66,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-        content: Text(msg),
+        content: Text(msg!),
         backgroundColor: Theme.of(ctx).errorColor,
       ));
     } catch (e) {
@@ -74,7 +74,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-        content: Text(e.message),
+        content: Text(e.toString()),
         backgroundColor: Theme.of(ctx).errorColor,
       ));
       print(e);

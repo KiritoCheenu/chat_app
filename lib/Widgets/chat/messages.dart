@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('chat')
           .orderBy('createdAt', descending: true)
@@ -18,7 +18,7 @@ class Messages extends StatelessWidget {
           );
         else if (!chatSnapshot.hasData) return Container();
 
-        final chatDocs = chatSnapshot.data.docs;
+        final chatDocs = chatSnapshot.data!.docs;
         final user = FirebaseAuth.instance.currentUser;
         return ListView.builder(
           reverse: true,
@@ -27,7 +27,7 @@ class Messages extends StatelessWidget {
             chatDocs[index]['text'],
             chatDocs[index]['username'],
             chatDocs[index]['userImage'],
-            chatDocs[index]['userId'] == user.uid,
+            chatDocs[index]['userId'] == user!.uid,
             key: ValueKey(chatDocs[index].id),
           ),
         );
