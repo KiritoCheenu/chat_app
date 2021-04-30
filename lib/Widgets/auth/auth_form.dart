@@ -22,17 +22,17 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
   var _isLogin = true;
-  String? _userEmail = '';
-  String? _userName = '';
-  String? _userPassword = '';
-  File? _userImageFile;
+  var _userEmail = '';
+  var _userName = '';
+  var _userPassword = '';
+  File _userImageFile;
 
   void _pickedImage(File image) {
     _userImageFile = image;
   }
 
   void _trySubmit() {
-    final isValid = _formKey.currentState!.validate();
+    final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
     if (_userImageFile == null && !_isLogin) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -42,15 +42,15 @@ class _AuthFormState extends State<AuthForm> {
       return;
     }
     if (isValid) {
-      _formKey.currentState!.save();
+      _formKey.currentState.save();
       print(_userEmail);
       print(_userName);
       print(_userPassword);
       widget.submitFn(
-        _userEmail!.trim(),
-        _userPassword!.trim(),
-        _userName!.trim(),
-        _userImageFile!,
+        _userEmail.trim(),
+        _userPassword.trim(),
+        _userName.trim(),
+        _userImageFile,
         _isLogin,
         context,
       );
@@ -75,7 +75,7 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                     key: ValueKey('email'),
                     validator: (value) {
-                      if (value!.isEmpty || !value.contains('@')) {
+                      if (value.isEmpty || !value.contains('@')) {
                         return 'Please enter a valid email address.';
                       }
                       return null;
@@ -92,7 +92,7 @@ class _AuthFormState extends State<AuthForm> {
                     TextFormField(
                       key: ValueKey('username'),
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 4) {
+                        if (value.isEmpty || value.length < 4) {
                           return 'Please enter at least 4 characters';
                         }
                         return null;
@@ -105,7 +105,7 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                     key: ValueKey('password'),
                     validator: (value) {
-                      if (value!.isEmpty || value.length < 7) {
+                      if (value.isEmpty || value.length < 7) {
                         return 'Password must be at least 7 characters long.';
                       }
                       return null;
