@@ -11,16 +11,19 @@ class _NewMessageState extends State<NewMessage> {
   var _enteredMessage = "";
   final _controller = new TextEditingController();
 
-  void _sendMessage() async{
+  void _sendMessage() async {
     FocusScope.of(context).unfocus();
-    final user =FirebaseAuth.instance.currentUser;
-    final userData= await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance.collection('users').doc(
+        user.uid).get();
     FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessage,
       'createdAt': Timestamp.now(),
-      'userId':user.uid,
-      'username':userData['username'],
-      'userImage' : userData['imageUrl']
+      'userId': user.uid,
+      'username': userData['username'],
+      'userImage': userData['imageUrl'],
+      'messageSeen': false,
+      'usersSeen':<String>[],
     });
     _controller.clear();
     setState(() {
@@ -47,9 +50,13 @@ class _NewMessageState extends State<NewMessage> {
             ),
           ),
           IconButton(
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
               icon: Icon(Icons.send),
-              onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage)
+              onPressed: _enteredMessage
+                  .trim()
+                  .isEmpty ? null : _sendMessage)
         ],
       ),
     );
