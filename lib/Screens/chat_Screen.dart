@@ -43,8 +43,9 @@ class _ChatScreenState extends State<ChatScreen> {
         var userList = doc['usersSeen'];
         if (!userList.contains(user.uid) && user.uid != doc['userId'])
           userList.add(user.uid);
-        bool seen = userList.length == count-1 ? true : false;
-        print(seen);
+
+        bool seen = count==null?false:userList.length ==( count - 1) ? true : false;
+        // print(seen);
         FirebaseFirestore.instance.collection('chat').doc(doc.id).update({
           "usersSeen": userList,
           'messageSeen': seen,

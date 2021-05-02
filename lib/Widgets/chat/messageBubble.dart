@@ -1,4 +1,7 @@
 import 'package:chat_app/Widgets/chat/replyMessage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_to/swipe_to.dart';
 
@@ -7,10 +10,21 @@ class MessageBubble extends StatelessWidget {
   final bool isMe;
   final String username;
   final String userImage;
+  final bool seen;
+  final Timestamp createdAt;
+
   // Key key1 =UniqueKey();
   // final focusNode= FocusNode();
-  MessageBubble(this.message, this.username, this.userImage, this.isMe, {key})
+  MessageBubble(this.message, this.username, this.userImage, this.isMe,
+      this.seen, this.createdAt,
+      {key})
       : super(key: key);
+  String timestamptoHour(Timestamp time){
+    DateTime now = time.toDate();
+    DateFormat formatter = DateFormat('h:mm a');
+    String formatted = formatter.format(now);
+    return formatted;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +35,24 @@ class MessageBubble extends StatelessWidget {
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             SwipeTo(
-              onRightSwipe: isMe?null:(){return ReplyMessageWidget(key: key,);},
-              onLeftSwipe: isMe?(){return ReplyMessageWidget(key: key,);}:null,
+              onRightSwipe: isMe
+                  ? null
+                  : () {
+                      return ReplyMessageWidget(
+                        key: key,
+                      );
+                    },
+              onLeftSwipe: isMe
+                  ? () {
+                      return ReplyMessageWidget(
+                        key: key,
+                      );
+                    }
+                  : null,
               child: Container(
                 decoration: BoxDecoration(
-                  color: isMe ? Colors.greenAccent : Theme.of(context).accentColor,
+                  color:
+                      isMe ? Colors.greenAccent : Theme.of(context).accentColor,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12),
@@ -50,6 +77,7 @@ class MessageBubble extends StatelessWidget {
                     Text(
                       username,
                       style: TextStyle(
+                        color: isMe ? Colors.black : Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -64,6 +92,23 @@ class MessageBubble extends StatelessWidget {
                                   .color),
                       textAlign: isMe ? TextAlign.end : TextAlign.start,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                      Text(timestamptoHour(createdAt)),
+                      if (isMe)
+                        seen
+                            ? Icon(
+                                Icons.done_all,
+                                color: Colors.blue,
+                                size: 20,
+                              )
+                            : Icon(
+                                Icons.done_all,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
+                    ])
                   ],
                 ),
               ),
@@ -81,7 +126,6 @@ class MessageBubble extends StatelessWidget {
         // TODO message swiping using Gesture Detector
         // TODO Date and time stamp
         // TODO Read Receipt
-
       ],
       clipBehavior: Clip.none,
     );
