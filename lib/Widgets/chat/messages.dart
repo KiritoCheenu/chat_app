@@ -31,21 +31,23 @@ class Messages extends StatelessWidget {
           physics: BouncingScrollPhysics(),
           reverse: true,
           itemCount: chatDocs.length,
-          itemBuilder: (ctx, index) => SwipeTo(
+          itemBuilder: (ctx, index) {
+            var message=MessageModel(
+              isSeen: chatDocs[index]['messageSeen'],
+              text: chatDocs[index]['text'],
+              createdAt: chatDocs[index]['createdAt'],
+              userId: chatDocs[index]['userId'],
+              username: chatDocs[index]['username'],
+              userImage: chatDocs[index]['userImage'],
+            );
+            return SwipeTo(
             child: MessageBubble(
-              message: MessageModel(
-                isSeen: chatDocs[index]['messageSeen'],
-                text: chatDocs[index]['text'],
-                createdAt: chatDocs[index]['createdAt'],
-                userId: chatDocs[index]['userId'],
-                username: chatDocs[index]['username'],
-                userImage: chatDocs[index]['userImage'],
-              ),
+              message: message,
               isMe: chatDocs[index]['userId'] == user.uid,
               key: ValueKey(chatDocs[index].id),
             ),
-            onRightSwipe: () {},
-          ),
+            onRightSwipe: ()=>onSwipedMessage(message),
+          );}
         );
       },
     );
