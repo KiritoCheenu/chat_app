@@ -28,27 +28,29 @@ class Messages extends StatelessWidget {
         final user = FirebaseAuth.instance.currentUser;
 
         return ListView.builder(
-          physics: BouncingScrollPhysics(),
-          reverse: true,
-          itemCount: chatDocs.length,
-          itemBuilder: (ctx, index) {
-            var message=MessageModel(
-              isSeen: chatDocs[index]['messageSeen'],
-              text: chatDocs[index]['text'],
-              createdAt: chatDocs[index]['createdAt'],
-              userId: chatDocs[index]['userId'],
-              username: chatDocs[index]['username'],
-              userImage: chatDocs[index]['userImage'],
-            );
-            return SwipeTo(
-            child: MessageBubble(
-              message: message,
-              isMe: chatDocs[index]['userId'] == user.uid,
-              key: ValueKey(chatDocs[index].id),
-            ),
-            onRightSwipe: ()=>onSwipedMessage(message),
-          );}
-        );
+            physics: BouncingScrollPhysics(),
+            reverse: true,
+            itemCount: chatDocs.length,
+            itemBuilder: (ctx, index) {
+              var message = MessageModel(
+                isSeen: chatDocs[index]['messageSeen'],
+                text: chatDocs[index]['text'],
+                createdAt: chatDocs[index]['createdAt'],
+                userId: chatDocs[index]['userId'],
+                username: chatDocs[index]['username'],
+                userImage: chatDocs[index]['userImage'],
+              );
+              bool isMe = chatDocs[index]['userId'] == user.uid;
+              return SwipeTo(
+                child: MessageBubble(
+                  message: message,
+                  isMe: isMe,
+                  key: ValueKey(chatDocs[index].id),
+                ),
+                onRightSwipe: isMe ? null : () => onSwipedMessage(message),
+                onLeftSwipe: isMe ? () => onSwipedMessage(message) : null,
+              );
+            });
       },
     );
   }
