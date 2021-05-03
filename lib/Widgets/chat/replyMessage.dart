@@ -33,7 +33,8 @@ class ReplyMessageWidget extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${message.username}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold,
+                  color: Colors.black87),
                 ),
               ),
               if (onCancelReply != null)
@@ -44,7 +45,7 @@ class ReplyMessageWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(message.text, style: TextStyle(color: Colors.black54)),
+          Text(message.text, style: TextStyle(color: Colors.black87)),
         ],
       );
 }

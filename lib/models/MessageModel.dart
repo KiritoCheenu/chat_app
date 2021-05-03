@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MessageModel{
+class MessageModel {
   final String userId;
   final String userImage;
   final String username;
@@ -9,7 +9,14 @@ class MessageModel{
   final Timestamp createdAt;
   final MessageModel replyMessage;
 
-  MessageModel({this.userId, this.userImage, this.username, this.text,this.isSeen, this.createdAt, this.replyMessage});
+  MessageModel(
+      {this.userId,
+      this.userImage,
+      this.username,
+      this.text,
+      this.isSeen,
+      this.createdAt,
+      this.replyMessage});
 
-  // MessageModel get replyMessage => _replyMessage;
+// MessageModel get replyMessage => _replyMessage;
 }

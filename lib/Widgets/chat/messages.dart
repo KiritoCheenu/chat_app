@@ -31,7 +31,9 @@ class Messages extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             reverse: true,
             itemCount: chatDocs.length,
+
             itemBuilder: (ctx, index) {
+
               var message = MessageModel(
                 isSeen: chatDocs[index]['messageSeen'],
                 text: chatDocs[index]['text'],
@@ -39,6 +41,12 @@ class Messages extends StatelessWidget {
                 userId: chatDocs[index]['userId'],
                 username: chatDocs[index]['username'],
                 userImage: chatDocs[index]['userImage'],
+                replyMessage:chatDocs[index]['replyTo']==null?null:MessageModel(
+                  username: chatDocs[index]['replyTo']['username'],
+                  userId: chatDocs[index]['replyTo']['userId'],
+                  createdAt: chatDocs[index]['replyTo']['createdAt'],
+                  text: chatDocs[index]['replyTo']['text'],
+                )
               );
               bool isMe = chatDocs[index]['userId'] == user.uid;
               return SwipeTo(

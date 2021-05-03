@@ -13,6 +13,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final focusNode = FocusNode();
   MessageModel replyMessage;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -38,18 +39,14 @@ class _ChatScreenState extends State<ChatScreen> {
         .get()
         .then((value) => count = value.size);
     final user = FirebaseAuth.instance.currentUser;
-
-    // print(users);
-
     FirebaseFirestore.instance.collection('chat').get().then((snapshot) {
       snapshot.docs.forEach((doc) {
         var userList = doc['usersSeen'];
         if (!userList.contains(user.uid) && user.uid != doc['userId'])
           userList.add(user.uid);
 
-        bool seen = count == null ? false : userList.length == (count - 1)
-            ? true
-            : false;
+        bool seen = doc['messageSeen'] == true ? true : false;
+        if (count != null) seen = userList.length == (count - 1) ? true : false;
         // print(seen);
         FirebaseFirestore.instance.collection('chat').doc(doc.id).update({
           "usersSeen": userList,
@@ -69,10 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
           DropdownButton(
             icon: Icon(
               Icons.more_vert,
-              color: Theme
-                  .of(context)
-                  .primaryIconTheme
-                  .color,
+              color: Theme.of(context).primaryIconTheme.color,
             ),
             items: [
               DropdownMenuItem(
@@ -102,13 +96,14 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: Container(
-              child: Messages(onSwipedMessage: (message){
-                replyToMessage(message);
-                focusNode.requestFocus();
-              },),
+              child: Messages(
+                onSwipedMessage: (message) {
+                  replyToMessage(message);
+                  focusNode.requestFocus();
+                },
+              ),
             ),
           ),
-
           NewMessage(
             focusNode: focusNode,
             // idUser: widget.user.idUser,
@@ -119,11 +114,13 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
   void replyToMessage(MessageModel message) {
     setState(() {
       replyMessage = message;
     });
   }
+
   void cancelReply() {
     setState(() {
       replyMessage = null;

@@ -33,6 +33,7 @@ class _NewMessageState extends State<NewMessage> {
         .collection('users')
         .doc(user.uid)
         .get();
+    MessageModel reply= widget.replyMessage;
     FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessage,
       'createdAt': Timestamp.now(),
@@ -41,6 +42,12 @@ class _NewMessageState extends State<NewMessage> {
       'userImage': userData['imageUrl'],
       'messageSeen': false,
       'usersSeen': <String>[],
+      'replyTo': reply==null?null:{
+        'text': reply.text,
+        'createdAt': reply.createdAt,
+        'userId': reply.userId,
+        'username': reply.username,
+      },
     });
     _controller.clear();
     setState(() {
