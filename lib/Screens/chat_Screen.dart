@@ -1,8 +1,9 @@
 import 'package:chat_app/Widgets/chat/messages.dart';
 import 'package:chat_app/Widgets/chat/newMessage.dart';
+import 'package:chat_app/models/MessageModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final focusNode = FocusNode();
+  MessageModel replyMessage;
   @override
   void initState() {
     // TODO: implement initState
@@ -44,7 +47,9 @@ class _ChatScreenState extends State<ChatScreen> {
         if (!userList.contains(user.uid) && user.uid != doc['userId'])
           userList.add(user.uid);
 
-        bool seen = count==null?false:userList.length ==( count - 1) ? true : false;
+        bool seen = count == null ? false : userList.length == (count - 1)
+            ? true
+            : false;
         // print(seen);
         FirebaseFirestore.instance.collection('chat').doc(doc.id).update({
           "usersSeen": userList,
@@ -64,7 +69,10 @@ class _ChatScreenState extends State<ChatScreen> {
           DropdownButton(
             icon: Icon(
               Icons.more_vert,
-              color: Theme.of(context).primaryIconTheme.color,
+              color: Theme
+                  .of(context)
+                  .primaryIconTheme
+                  .color,
             ),
             items: [
               DropdownMenuItem(
@@ -90,14 +98,35 @@ class _ChatScreenState extends State<ChatScreen> {
           )
         ],
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(child: Messages()),
-            NewMessage(),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              child: Messages(onSwipedMessage: (message){
+                replyToMessage(message);
+                focusNode.requestFocus();
+              },),
+            ),
+          ),
+
+          NewMessage(
+            focusNode: focusNode,
+            // idUser: widget.user.idUser,
+            onCancelReply: cancelReply,
+            replyMessage: replyMessage,
+          ),
+        ],
       ),
     );
+  }
+  void replyToMessage(MessageModel message) {
+    setState(() {
+      replyMessage = message;
+    });
+  }
+  void cancelReply() {
+    setState(() {
+      replyMessage = null;
+    });
   }
 }
