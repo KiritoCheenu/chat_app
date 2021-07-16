@@ -24,6 +24,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     messageSeen();
     // TODO: implement didChangeDependencies

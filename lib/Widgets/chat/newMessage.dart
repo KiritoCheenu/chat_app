@@ -56,6 +56,12 @@ class _NewMessageState extends State<NewMessage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+  }
+  @override
   Widget build(BuildContext context) {
     final isReplying = widget.replyMessage != null;
     return Container(
